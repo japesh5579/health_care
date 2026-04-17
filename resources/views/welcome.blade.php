@@ -346,7 +346,8 @@
             if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
             const res = await fetch(`${API}${path}`, { method, headers, body: body ? JSON.stringify(body) : null });
             if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
-            return res.json();
+            const data = await res.json();
+            return { ok: res.ok, data, status: res.status };
         }
 
         function toggleAuth(view) {
@@ -372,24 +373,28 @@
         async function loadData() {
             try {
                 const [pts, docs, apts, me] = await Promise.all([api('/patients'), api('/doctors'), api('/appointments'), api('/me')]);
-                state.user = me;
-                document.getElementById('user-display').innerText = `Admin: ${me.name}`;
-                document.getElementById('stat-patients').innerText = pts.data.length;
-                document.getElementById('stat-doctors').innerText = docs.data.length;
-                document.getElementById('stat-appointments').innerText = apts.data.length;
+                
+                if (!pts.ok || !docs.ok || !apts.ok) return;
 
-                renderList('recent-list', apts.data.slice(0, 5), 'apt');
-                renderList('patients-list', pts.data, 'pat');
-                renderList('appointments-list', apts.data, 'apt');
+                state.user = me.data;
+                document.getElementById('user-display').innerText = `Admin: ${state.user.name}`;
+                document.getElementById('stat-patients').innerText = pts.data.data.length;
+                document.getElementById('stat-doctors').innerText = docs.data.data.length;
+                document.getElementById('stat-appointments').innerText = apts.data.data.length;
+
+                renderList('recent-list', apts.data.data.slice(0, 5), 'apt');
+                renderList('patients-list', pts.data.data, 'pat');
+                renderList('appointments-list', apts.data.data, 'apt');
 
                 // Populate selects
-                const pSel = document.getElementById('apt-patient'); pSel.innerHTML = pts.data.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-                const dSel = document.getElementById('apt-doctor'); dSel.innerHTML = docs.data.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
-            } catch(e) {}
+                const pSel = document.getElementById('apt-patient'); pSel.innerHTML = pts.data.data.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+                const dSel = document.getElementById('apt-doctor'); dSel.innerHTML = docs.data.data.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+            } catch(e) { console.error(e); }
         }
 
         function renderList(id, data, type) {
             const el = document.getElementById(id); el.innerHTML = '';
+            if (!data) return;
             data.forEach(item => {
                 const row = document.createElement('div'); row.className = 'list-row';
                 if (type === 'apt') {
@@ -410,12 +415,12 @@
             
             try {
                 const res = await api(path, 'POST', body);
-                if (res.access_token) {
-                    localStorage.setItem('token', res.access_token);
-                    state.token = res.access_token;
+                if (res.ok && res.data.access_token) {
+                    localStorage.setItem('token', res.data.access_token);
+                    state.token = res.data.access_token;
                     showToast('Welcome back, Admin.');
                     init();
-                } else { alert(res.message || 'Error occurred'); }
+                } else { alert(res.data.message || 'Error occurred'); }
             } catch(e) { alert('Authentication Failed'); }
             btn.disabled = false;
         });
@@ -423,18 +428,26 @@
         document.getElementById('aptForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const body = { patient_id: document.getElementById('apt-patient').value, doctor_id: document.getElementById('apt-doctor').value, appointment_date: document.getElementById('apt-date').value };
-            await api('/appointments', 'POST', body);
-            showToast('New appointment confirmed.');
-            loadData();
+            const res = await api('/appointments', 'POST', body);
+            if (res.ok) {
+                showToast('New appointment confirmed.');
+                loadData();
+            } else {
+                alert('Wait! ' + (res.data.message || 'Check your date/time (Must be in the future).'));
+            }
         });
 
         document.getElementById('patientForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const body = { name: document.getElementById('p-name').value, email: document.getElementById('p-email').value };
-            await api('/patients', 'POST', body);
-            showToast('Patient record added.');
-            e.target.reset();
-            loadData();
+            const res = await api('/patients', 'POST', body);
+            if (res.ok) {
+                showToast('Patient record added.');
+                e.target.reset();
+                loadData();
+            } else {
+                alert('Error: ' + (res.data.message || 'Check your inputs.'));
+            }
         });
 
         function switchView(id, el) {

@@ -26,7 +26,7 @@ class AppointmentController extends Controller
         $validatedData = $request->validate([
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
-            'appointment_date' => 'required|date|after:now',
+            'appointment_date' => 'required|date',
         ]);
 
         $appointment = Appointment::create([
