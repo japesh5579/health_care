@@ -20,6 +20,9 @@ RUN cp .env.example .env
 # Install Composer dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
+# Create missing storage directories (essential for Render/Docker)
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache storage/logs bootstrap/cache
+
 # Generate Key & Setup SQLite Database
 RUN php artisan key:generate --force
 RUN touch database/database.sqlite
