@@ -3,589 +3,626 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Health API Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Nexus Health Pro | API Engine</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --surface: rgba(255, 255, 255, 0.03);
-            --surface-hover: rgba(255, 255, 255, 0.08);
-            --surface-border: rgba(255, 255, 255, 0.1);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.5);
+            --primary-hover: #2563eb;
+            --primary-soft: rgba(59, 130, 246, 0.1);
+            --bg-base: #06080f;
+            --bg-card: #0f121d;
+            --bg-sidebar: #090b14;
+            --border: rgba(255, 255, 255, 0.05);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
             --success: #10b981;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --outfit: 'Outfit', sans-serif;
+            --jakarta: 'Plus Jakarta Sans', sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-base);
             color: var(--text-main);
+            font-family: var(--jakarta);
             min-height: 100vh;
-            overflow-x: hidden;
             display: flex;
-            position: relative;
+            overflow: hidden;
         }
 
-        /* Animated Glowing Orbs Background */
-        .ambient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.4;
+        /* --- BACKGROUND EFFECTS --- */
+        .mesh-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            animation: float 20s infinite alternate cubic-bezier(0.5, 0, 0.5, 1);
-        }
-        .orb-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, #3b82f633, transparent 70%); }
-        .orb-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, #8b5cf633, transparent 70%); animation-delay: -5s; }
-        .orb-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: radial-gradient(circle, #10b98122, transparent 70%); animation-delay: -10s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(5%, 5%) scale(1.1); }
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
         }
 
-        /* Glassmorphism Containers */
-        .glass-panel {
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--surface-border);
-            border-radius: 24px;
-            padding: 24px;
-            transition: all 0.3s ease;
-        }
-        .glass-panel:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Layout */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 280px;
-            padding: 32px 24px;
-            border-right: 1px solid var(--surface-border);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 40px;
-            background: rgba(11, 15, 25, 0.7);
-            backdrop-filter: blur(20px);
-            z-index: 10;
+            padding: 32px 0;
+            z-index: 100;
         }
 
         .brand {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            padding: 0 32px 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--outfit);
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+        .brand span {
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 0 16px;
+        }
+        .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .nav-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .nav-link {
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: var(--text-muted);
+            padding: 14px 20px;
+            color: var(--text-dim);
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.2s ease;
+            font-size: 15px;
+            border-radius: 14px;
+            margin-bottom: 4px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-        .nav-link:hover, .nav-link.active {
-            background: var(--surface-hover);
-            color: var(--text-main);
-        }
-        .nav-link.active::after {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--primary);
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-            overflow-y: auto;
-            max-height: 100vh;
-        }
-
-        .header-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
-        }
-
-        .stat-card {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 40px; height: 40px;
-            background: var(--primary-glow);
-            filter: blur(20px);
-            border-radius: 50%;
-        }
-
-        .stat-title { color: var(--text-muted); font-size: 14px; font-weight: 500; }
-        .stat-value { font-size: 36px; font-weight: 700; }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
             color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-        /* Lists */
-        .data-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .data-list.full-height {
-            max-height: 70vh;
-        }
-
-        .list-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-        .list-item:hover {
-            background: var(--surface-hover);
-            border-color: var(--surface-border);
             transform: translateX(4px);
         }
+        .nav-item.active {
+            background-color: var(--primary-soft);
+            color: var(--primary);
+        }
+        .nav-item i { width: 20px; height: 20px; }
 
-        .item-info h4 { font-weight: 500; margin-bottom: 4px; }
-        .item-info span { font-size: 13px; color: var(--text-muted); }
-
-        .badge {
-            padding: 4px 12px;
+        .sidebar-footer {
+            padding: 0 24px;
+        }
+        .pro-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid var(--border);
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .pro-card p { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
+
+        /* --- MAIN CONTENT --- */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .badge.completed { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2); }
-        .badge.cancelled { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
-
-        /* Loader */
-        .loader {
-            width: 24px;
-            height: 24px;
-            border: 3px solid var(--surface-border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: auto;
+        .top-bar {
+            padding: 24px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: rgba(6, 8, 15, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .page-title h1 { font-family: var(--outfit); font-size: 24px; font-weight: 700; color: #fff; }
+        .page-title p { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
 
-        /* Form */
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-muted); }
-        .form-control {
+        .content-body {
+            padding: 40px;
             width: 100%;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--surface-border);
-            color: #fff;
-            padding: 12px 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- CARDS & GRIDS --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover { border-color: rgba(59, 130, 246, 0.3); transform: translateY(-4px); }
+        .stat-header { display: flex; align-items: center; justify-content: space-between; }
+        .stat-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .stat-icon.green { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+        .stat-icon.purple { background: rgba(139, 92, 246, 0.1); color: #a78bfa; }
+        .stat-label { font-size: 15px; font-weight: 500; color: var(--text-dim); }
+        .stat-value { font-size: 32px; font-weight: 800; font-family: var(--outfit); color: #fff; }
+
+        .card-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .card-title h3 { font-size: 18px; font-weight: 700; color: #fff; }
+
+        /* --- LISTS --- */
+        .data-list { display: flex; flex-direction: column; gap: 8px; }
+        .list-row {
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 18px;
+            transition: background 0.2s;
+        }
+        .list-row:hover { background: rgba(255, 255, 255, 0.02); }
+        .avatar {
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--text-dim);
             font-size: 14px;
-            transition: all 0.2s;
         }
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        .info h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .info p { font-size: 13px; color: var(--text-dim); }
+        
+        .status-pill {
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .btn-primary {
-            width: 100%;
+        .status-pill.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-pill.completed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-pill.cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* --- FORM --- */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .field label { font-size: 14px; font-weight: 600; color: var(--text-dim); margin-left: 4px; }
+        .input-box {
+            background: #06080f;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        .input-box:focus { outline: none; border-color: var(--primary); }
+        .btn-submit {
+            grid-column: span 2;
             background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
+            color: #fff;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 600;
+            padding: 16px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4); }
+
+        /* --- COMPONENTS --- */
+        .badge-count {
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        /* View Switching Logic */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        .view-section.active {
-            display: block;
-        }
+        /* Views Switching */
+        .view-section { display: none; animation: slideUp 0.4s ease-out; }
+        .view-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* TOAST */
+        #toast-container { position: fixed; bottom: 40px; right: 40px; z-index: 9999; }
+        .toast {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            padding: 16px 24px;
+            border-radius: 18px;
+            color: #fff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
         }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @media (max-width: 1024px) {
-            .grid-layout { grid-template-columns: 1fr; }
+        /* SKELETON LOADER */
+        .skeleton { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; position: relative; overflow: hidden; }
+        .skeleton::after {
+            content: "";
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shimmer 1.5s infinite;
         }
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--surface-border); padding: 20px; }
-            .main-content { padding: 20px; }
-        }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        @media (max-width: 1100px) { .form-grid { grid-template-columns: 1fr; } .btn-submit { grid-column: span 1; } }
     </style>
 </head>
 <body>
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
+    <div class="mesh-bg"></div>
+    <div id="toast-container"></div>
 
     <aside class="sidebar">
         <div class="brand">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                <defs>
-                    <linearGradient id="paint0_linear" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#3b82f6"/>
-                        <stop offset="1" stop-color="#8b5cf6"/>
-                    </linearGradient>
-                </defs>
-            </svg>
-            Nexus Health
+            <i data-lucide="activity" style="color: var(--primary)"></i>
+            Nexus<span>Health</span>
         </div>
-        <nav class="nav-links">
-            <a class="nav-link active" onclick="switchTab('dashboard', this)">Dashboard</a>
-            <a class="nav-link" onclick="switchTab('patients', this)">Patients Archive</a>
-            <a class="nav-link" onclick="switchTab('doctors', this)">Medical Staff</a>
-            <a class="nav-link" onclick="switchTab('appointments', this)">Appointments</a>
+
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="switchView('dashboard', this)">
+                <i data-lucide="layout-grid"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="switchView('patients', this)">
+                <i data-lucide="users"></i> Patients
+            </div>
+            <div class="nav-item" onclick="switchView('staff', this)">
+                <i data-lucide="shield-plus"></i> Staff members
+            </div>
+            <div class="nav-item" onclick="switchView('appointments', this)">
+                <i data-lucide="calendar"></i> Appointments
+            </div>
         </nav>
 
-        <div class="glass-panel" style="margin-top: auto; border: 1px solid rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.05);">
-            <h4 style="font-size: 14px; margin-bottom: 8px;">REST API Interface</h4>
-            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Responses are automatically parsing raw JSON data directly from the dynamic Laravel API routes.</p>
+        <div class="sidebar-footer">
+            <div class="pro-card">
+                <p>Advanced Production API Engine V1.10</p>
+                <div style="display: flex; justify-content: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success)"></div>
+                    <span style="font-size: 11px; font-weight: 700; color: var(--success)">LIVE SYSTEM</span>
+                </div>
+            </div>
         </div>
     </aside>
 
-    <main class="main-content">
-        <!-- GLOBAL STATS -->
-        <div class="header-stats">
-            <div class="glass-panel stat-card">
-                <span class="stat-title">Registered Patients</span>
-                <span class="stat-value" id="stat-patients"><div class="loader"></div></span>
+    <main class="main-container">
+        <header class="top-bar">
+            <div class="page-title">
+                <h1 id="view-title">Health Overview</h1>
+                <p id="view-subtitle">Monitor and manage medical operations in real-time.</p>
             </div>
-            <div class="glass-panel stat-card">
-                <span class="stat-title">Total Active Doctors</span>
-                <span class="stat-value" id="stat-doctors"><div class="loader"></div></span>
+            <div style="display: flex; gap: 16px;">
+                <div class="nav-item" style="margin: 0; padding: 10px;"><i data-lucide="search"></i></div>
+                <div class="nav-item" style="margin: 0; padding: 10px;"><i data-lucide="bell"></i></div>
             </div>
-            <div class="glass-panel stat-card">
-                <span class="stat-title">Total Appointments</span>
-                <span class="stat-value" id="stat-appointments"><div class="loader"></div></span>
+        </header>
+
+        <div class="content-body">
+            
+            <!-- STATS ROW -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Patients</span>
+                        <div class="stat-icon purple"><i data-lucide="users"></i></div>
+                    </div>
+                    <div class="stat-value" id="stat-patients">...</div>
+                    <p style="font-size: 12px; color: var(--success)">+12% from last month</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Active Doctors</span>
+                        <div class="stat-icon blue"><i data-lucide="user-plus"></i></div>
+                    </div>
+                    <div class="stat-value" id="stat-doctors">...</div>
+                    <p style="font-size: 12px; color: var(--text-dim)">Currently on duty</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-label">Appointments</span>
+                        <div class="stat-icon green"><i data-lucide="calendar-check"></i></div>
+                    </div>
+                    <div class="stat-value" id="stat-appointments">...</div>
+                    <p style="font-size: 12px; color: var(--warning)">8 pending verification</p>
+                </div>
             </div>
+
+            <!-- DASHBOARD VIEW -->
+            <section id="view-dashboard" class="view-section active">
+                <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px;">
+                    <div class="card-container">
+                        <div class="card-title">
+                            <h3>Real-time Activity</h3>
+                            <span class="badge-count" id="count-recent">...</span>
+                        </div>
+                        <div id="dashboard-recent-list" class="data-list">
+                            <div class="skeleton" style="margin: 10px 0; height: 60px;"></div>
+                            <div class="skeleton" style="margin: 10px 0; height: 60px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-container">
+                        <div class="card-title"><h3>Register Patient</h3></div>
+                        <form id="patientForm" class="form-grid">
+                            <div class="field">
+                                <label>Full Name</label>
+                                <input type="text" id="f-name" class="input-box" placeholder="e.g. Liam Johnson" required>
+                            </div>
+                            <div class="field">
+                                <label>Email Address</label>
+                                <input type="email" id="f-email" class="input-box" placeholder="liam@provider.com" required>
+                            </div>
+                            <button type="submit" id="submit-btn" class="btn-submit">Register Record</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PATIENTS VIEW -->
+            <section id="view-patients" class="view-section">
+                <div class="card-container">
+                    <div class="card-title">
+                        <h3>Patient Master Archive</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="nav-item" style="padding: 8px 16px; font-size: 12px;"><i data-lucide="filter"></i> Filter</button>
+                        </div>
+                    </div>
+                    <div id="patients-full-list" class="data-list"></div>
+                </div>
+            </section>
+
+            <!-- STAFF VIEW -->
+            <section id="view-staff" class="view-section">
+                <div class="card-container">
+                    <div class="card-title"><h3>Qualified Specialists</h3></div>
+                    <div id="staff-full-list" class="data-list"></div>
+                </div>
+            </section>
+
+            <!-- APPOINTMENTS VIEW -->
+            <section id="view-appointments" class="view-section">
+                <div class="card-container">
+                    <div class="card-title"><h3>Comprehensive Appointment Logs</h3></div>
+                    <div id="appointments-full-list" class="data-list"></div>
+                </div>
+            </section>
+
         </div>
-
-        <!-- MAIN DASHBOARD VIEW -->
-        <section id="view-dashboard" class="view-section active">
-            <div class="grid-layout">
-                <div class="glass-panel">
-                    <div class="section-title">
-                        Upcoming Appointments
-                        <span style="font-size: 13px; font-weight: 400; color: var(--text-muted);">Real-time Live Sync</span>
-                    </div>
-                    <div class="data-list" id="appointments-list-dashboard">
-                        <div class="loader" style="margin-top: 40px;"></div>
-                    </div>
-                </div>
-
-                <div class="glass-panel">
-                    <div class="section-title">Quick Register</div>
-                    <div style="margin-bottom: 24px;">
-                        <p style="font-size: 13px; color: var(--text-muted);">Test the <code>POST /api/patients</code> route by dynamically creating a record.</p>
-                    </div>
-                    
-                    <form id="createPatientForm">
-                        <div class="input-group">
-                            <label>Patient Full Name</label>
-                            <input type="text" id="p_name" class="form-control" autocomplete="off" placeholder="e.g. Jane Doe" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Email Address</label>
-                            <input type="email" id="p_email" class="form-control" autocomplete="off" placeholder="jane@example.com" required>
-                        </div>
-                        <button type="submit" class="btn-primary" id="submitBtn">Create Patient Record</button>
-                        <div id="form-msg" style="margin-top: 12px; font-size: 13px; color: #34d399; text-align: center; display: none;">User Created! JSON response OK.</div>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-        <!-- PATIENTS ARCHIVE VIEW -->
-        <section id="view-patients" class="view-section">
-            <div class="glass-panel">
-                <div class="section-title">
-                    Patient Directory
-                    <span style="font-size: 13px; font-weight: 400; color: var(--text-muted);">Fetched from GET /api/patients</span>
-                </div>
-                <div class="data-list full-height" id="patients-list-full">
-                    <div class="loader" style="margin-top: 40px;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- DOCTORS VIEW -->
-        <section id="view-doctors" class="view-section">
-            <div class="glass-panel">
-                <div class="section-title">
-                    Medical Staff
-                    <span style="font-size: 13px; font-weight: 400; color: var(--text-muted);">Fetched from GET /api/doctors</span>
-                </div>
-                <div class="data-list full-height" id="doctors-list-full">
-                    <div class="loader" style="margin-top: 40px;"></div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- APPOINTMENTS VIEW -->
-        <section id="view-appointments" class="view-section">
-            <div class="glass-panel">
-                <div class="section-title">
-                    Master Appointments Log
-                    <span style="font-size: 13px; font-weight: 400; color: var(--text-muted);">Fetched from GET /api/appointments</span>
-                </div>
-                <div class="data-list full-height" id="appointments-list-full">
-                    <div class="loader" style="margin-top: 40px;"></div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <script>
-        // API Base configuration - Using relative path to support production domains dynamically
+        // API Base configuration
         const API = '/api';
 
-        // Custom Cache
-        let globalData = { doctors: [], patients: [], appointments: [] };
+        // --- View Switching ---
+        function switchView(id, el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.add('active');
 
-        // View Switcher logic
-        function switchTab(tabId, element) {
-            // Update Active Link UI
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-
-            // Hide all sections, show active
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${tabId}`).classList.add('active');
-
-            // Optionally call fetchStats if we want aggressive refreshing on tab click
-            // fetchStats();
+            const titles = {
+                dashboard: { h: 'Health Overview', p: 'Monitor real-time system metrics.' },
+                patients: { h: 'Patient Directory', p: 'Manage and search patient records.' },
+                staff: { h: 'Staff Register', p: 'View duty medical professionals.' },
+                appointments: { h: 'Appointment Calendar', p: 'Complete history of scheduled clinic time.' }
+            };
+            document.getElementById('view-title').innerText = titles[id].h;
+            document.getElementById('view-subtitle').innerText = titles[id].p;
         }
 
-        // Global Fetch 
-        async function fetchStats() {
+        // --- Data Handling ---
+        async function loadAllData() {
             try {
-                const [docRes, patRes, appRes] = await Promise.all([
-                    fetch(`${API}/doctors`),
+                const [pRes, dRes, aRes] = await Promise.all([
                     fetch(`${API}/patients`),
+                    fetch(`${API}/doctors`),
                     fetch(`${API}/appointments`)
                 ]);
 
-                const doctors = await docRes.json();
-                const patients = await patRes.json();
-                const appointments = await appRes.json();
+                const patients = (await pRes.json()).data || [];
+                const doctors = (await dRes.json()).data || [];
+                const appointments = (await aRes.json()).data || [];
 
-                globalData.doctors = doctors.data;
-                globalData.patients = patients.data;
-                globalData.appointments = appointments.data;
+                // Stats
+                document.getElementById('stat-patients').innerText = patients.length;
+                document.getElementById('stat-doctors').innerText = doctors.length;
+                document.getElementById('stat-appointments').innerText = appointments.length;
+                document.getElementById('count-recent').innerText = Math.min(appointments.length, 5);
 
-                // Update Stats Header
-                document.getElementById('stat-doctors').innerText = doctors.total || doctors.data.length || 0;
-                document.getElementById('stat-patients').innerText = patients.total || patients.data.length || 0;
-                document.getElementById('stat-appointments').innerText = appointments.total || appointments.data.length || 0;
+                renderDashboard(appointments, doctors);
+                renderPatients(patients);
+                renderStaff(doctors);
+                renderAppointments(appointments);
 
-                // Render UI Lists
-                renderDoctors(doctors.data);
-                renderPatients(patients.data);
-                renderAppointments(appointments.data);
-
-            } catch (error) {
-                console.error("API Error", error);
+                lucide.createIcons();
+            } catch (err) {
+                console.error("API Failure", err);
             }
         }
 
-        // Render Functions
-        function renderDoctors(data) {
-            const list = document.getElementById('doctors-list-full');
+        function renderDashboard(appointments, doctors) {
+            const list = document.getElementById('dashboard-recent-list');
             list.innerHTML = '';
-            if(!data || data.length === 0) { list.innerHTML = '<p class="loader-fallback">No doctors found.</p>'; return; }
-
-            data.forEach(doc => {
+            
+            appointments.slice(0, 5).forEach(app => {
+                const date = new Date(app.appointment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                 list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h4>${doc.name}</h4>
-                            <span>${doc.specialization} • ID: ${doc.id}</span>
+                    <div class="list-row">
+                        <div class="avatar">${app.patient ? app.patient.name.charAt(0) : '?'}</div>
+                        <div class="info">
+                            <h4>${app.patient ? app.patient.name : 'Unknown Patient'}</h4>
+                            <p>Assigned to ${app.doctor ? app.doctor.name : 'Unassigned'} • ${date}</p>
                         </div>
+                        <div class="status-pill ${app.status}">${app.status}</div>
                     </div>
                 `;
             });
         }
 
         function renderPatients(data) {
-            const list = document.getElementById('patients-list-full');
+            const list = document.getElementById('patients-full-list');
             list.innerHTML = '';
-            if(!data || data.length === 0) { list.innerHTML = '<p class="loader-fallback">No patients found.</p>'; return; }
-
-            // Ensure the latest added patients show at the top by reversing array
-            const sortedData = [...data].reverse();
-
-            sortedData.forEach(pat => {
+            data.forEach(p => {
                 list.innerHTML += `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h4>${pat.name}</h4>
-                            <span>Email: ${pat.email}</span>
+                    <div class="list-row" style="grid-template-columns: 48px 1fr auto">
+                        <div class="avatar" style="background: var(--primary-soft); color: var(--primary)">${p.name.charAt(0)}</div>
+                        <div class="info">
+                            <h4>${p.name}</h4>
+                            <p>${p.email}</p>
                         </div>
-                        <span style="font-size:12px; color:var(--text-muted)">ID: ${pat.id}</span>
+                        <div class="status-pill" style="background: rgba(255,255,255,0.05); color: #fff">PAT-${p.id}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderStaff(data) {
+            const list = document.getElementById('staff-full-list');
+            list.innerHTML = '';
+            data.forEach(d => {
+                list.innerHTML += `
+                    <div class="list-row" style="grid-template-columns: 48px 1fr auto">
+                        <div class="avatar" style="background: rgba(16, 185, 129, 0.1); color: var(--success)">MD</div>
+                        <div class="info">
+                            <h4>${d.name}</h4>
+                            <p>${d.specialization}</p>
+                        </div>
+                        <div style="color: var(--text-dim); font-size: 13px; font-weight: 700">ONLINE</div>
                     </div>
                 `;
             });
         }
 
         function renderAppointments(data) {
-            const listDash = document.getElementById('appointments-list-dashboard');
-            const listFull = document.getElementById('appointments-list-full');
-            listDash.innerHTML = ''; listFull.innerHTML = '';
-
-            if(!data || data.length === 0) { 
-                listDash.innerHTML = '<p class="loader-fallback">No appointments found.</p>'; 
-                listFull.innerHTML = '<p class="loader-fallback">No appointments found.</p>'; 
-                return; 
-            }
-
-            data.forEach((app, index) => {
-                const dateObj = new Date(app.appointment_date);
-                const prettyDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
-                
-                const html = `
-                    <div class="list-item">
-                        <div class="item-info">
-                            <h4>Patient: ${app.patient ? app.patient.name : 'ID ' + app.patient_id}</h4>
-                            <span>With ${app.doctor ? app.doctor.name : 'Doctor'} • ${prettyDate}</span>
+            const list = document.getElementById('appointments-full-list');
+            list.innerHTML = '';
+            data.forEach(app => {
+                const date = new Date(app.appointment_date).toLocaleDateString();
+                list.innerHTML += `
+                    <div class="list-row">
+                        <div class="avatar" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa">CAL</div>
+                        <div class="info">
+                            <h4>Appt #${app.id}</h4>
+                            <p>${app.patient ? app.patient.name : 'N/A'} with ${app.doctor ? app.doctor.name : 'N/A'} • Scheduled for ${date}</p>
                         </div>
-                        <span class="badge ${app.status}">${app.status.toUpperCase()}</span>
+                        <div class="status-pill ${app.status}">${app.status}</div>
                     </div>
                 `;
-                
-                // Show only last 5 on dashboard
-                if (index < 5) listDash.innerHTML += html;
-                listFull.innerHTML += html;
             });
         }
 
-        // Form Submit Event using POST /api/patients
-        document.getElementById('createPatientForm').addEventListener('submit', async (e) => {
+        // --- Notification ---
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i data-lucide="check-circle" style="color: var(--success)"></i> ${msg}`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // --- Form Submission ---
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const msg = document.getElementById('form-msg');
-            
-            const payload = {
-                name: document.getElementById('p_name').value,
-                email: document.getElementById('p_email').value
+            const btn = document.getElementById('submit-btn');
+            const data = {
+                name: document.getElementById('f-name').value,
+                email: document.getElementById('f-email').value
             };
 
-            btn.innerText = "Processing...";
-            btn.style.opacity = "0.7";
+            btn.disabled = true;
+            btn.innerText = 'Communicating with API...';
 
             try {
-                const response = await fetch(`${API}/patients`, {
+                const res = await fetch(`${API}/patients`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(data)
                 });
 
-                if (response.ok) {
-                    msg.style.display = 'block';
-                    setTimeout(() => msg.style.display = 'none', 3000);
-                    document.getElementById('createPatientForm').reset();
-                    // Live refresh the entire dashboard so the new patient appears instantly in the lists.
-                    fetchStats();
+                if (res.ok) {
+                    showToast('Patient records updated successfully.');
+                    document.getElementById('patientForm').reset();
+                    loadAllData();
                 } else {
-                    const errorData = await response.json();
-                    alert("Error: " + (errorData.message || "Invalid Input. Ensure email is unique."));
+                    const error = await res.json();
+                    alert(error.message || "Email must be unique.");
                 }
             } catch (err) {
-                console.error(err);
-                alert("Network error occurred connecting to API.");
+                alert("API connection failed.");
             } finally {
-                btn.innerText = "Create Patient Record";
-                btn.style.opacity = "1";
+                btn.disabled = false;
+                btn.innerText = 'Register Record';
             }
         });
 
-        // Initialize on Load
-        document.addEventListener('DOMContentLoaded', fetchStats);
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllData();
+            // Refresh icons one last time
+            setTimeout(() => lucide.createIcons(), 1000);
+        });
     </script>
 </body>
 </html>
