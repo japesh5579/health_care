@@ -2,6 +2,8 @@
 
 **Nexus Health Pro** is a high-performance clinical management platform designed to streamline medical operations, secure patient data via industry-standard authentication, and provide real-time clinical analytics. 
 
+**Live Demo:** [https://nexus-care-wxci.onrender.com/](https://nexus-care-wxci.onrender.com/)
+
 Built with a focus on speed and aesthetic excellence, this application leverages a robust **Laravel 11** backend and a custom **Glassmorphism SPA** frontend.
 
 ---
@@ -69,6 +71,11 @@ Visit the application at: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 By default, the dashboard is protected. 
 - **Sign Up:** Navigate to the "Sign Up" tab in the login overlay to create your first Administrative account.
 - **Log In:** Use your credentials to enter the clinical operations suite. The system will securely store your session token in `localStorage`.
+
+### 🔑 Demo Credentials
+For easy testing, you can use the following pre-seeded admin account:
+- **Email:** `jhatta@gmail.com`
+- **Password:** `jhatta12345`
 
 ### 2. Clinical Operations
 - **Dashboard:** View top-level stats and recent appointment activity.

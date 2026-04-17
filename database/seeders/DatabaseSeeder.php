@@ -27,6 +27,13 @@ class DatabaseSeeder extends Seeder
             Doctor::create($doc);
         }
 
+        // Create Demo Admin User for Portfolio
+        \App\Models\User::create([
+            'name' => 'Demo Admin',
+            'email' => 'jhatta@gmail.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('jhatta12345'),
+        ]);
+
         $patientsData = [
             ['name' => 'Sarah Connor', 'email' => 'sarah.c@example.com'],
             ['name' => 'John Smith', 'email' => 'john.s@example.com'],
