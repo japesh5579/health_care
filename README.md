@@ -1,66 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏥 Nexus Health Pro | Clinical Management Suite
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Nexus Health Pro** is a high-performance clinical management platform designed to streamline medical operations, secure patient data via industry-standard authentication, and provide real-time clinical analytics. 
 
-## About Laravel
+Built with a focus on speed and aesthetic excellence, this application leverages a robust **Laravel 11** backend and a custom **Glassmorphism SPA** frontend.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Key Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **🔐 Secure Authentication:** Full API-based auth system using **Laravel Sanctum**. (Register, Login, logout).
+- **📋 Patient Archive:** Centralized directory to manage and search patient medical profiles.
+- **👨‍⚕️ Staff Management:** Real-time visibility of active medical professionals and specialists.
+- **📅 Appointment Engine:** Dynamic scheduling system allowing admins to link patients and doctors effortlessly.
+- **📊 Operations Dashboard:** Instant clinical metrics including total patient counts, staff duty logs, and recent activity timelines.
+- **🐳 DevOps Ready:** Includes a production-optimized **Dockerfile** for instant deployment on cloud providers (Render, Fly.io, etc.).
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Tech Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Backend:** PHP 8.3 + Laravel 11
+- **Auth:** Laravel Sanctum (Bearer Token)
+- **Database:** SQLite (Default for portability) / MySQL compatible
+- **Frontend:** Vanilla JavaScript (ES6+), CSS Grid/Flexbox, HTML5
+- **Icons:** Lucide Icons
+- **Deployment:** Docker
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 📦 Local Installation Guide
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Follow these steps to get the clinical engine running on your local machine:
 
-### Premium Partners
+### 1. Prerequisites
+Ensure you have **PHP 8.2+** and **Composer** installed.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 2. Clone and Install
+```bash
+git clone https://github.com/japesh5579/health_care.git
+cd health_care
+composer install
+```
 
-## Contributing
+### 3. Environment Configuration
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Database Initialization
+This command will create the local SQLite database, run migrations, and populate the system with expert doctors and sample patients:
+```bash
+touch database/database.sqlite
+php artisan migrate:fresh --seed
+```
 
-## Code of Conduct
+### 5. Start the Engine
+```bash
+php artisan serve
+```
+Visit the application at: **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📖 How to Use
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Security Check
+By default, the dashboard is protected. 
+- **Sign Up:** Navigate to the "Sign Up" tab in the login overlay to create your first Administrative account.
+- **Log In:** Use your credentials to enter the clinical operations suite. The system will securely store your session token in `localStorage`.
 
-## License
+### 2. Clinical Operations
+- **Dashboard:** View top-level stats and recent appointment activity.
+- **Register Patients:** Use the "Quick Register" form to add new patients to the clinical archive.
+- **Schedule Appointments:** Go to the "Appointments" tab. Use the "Schedule New" form to select a patient and doctor from the automated dropdowns and confirm clinic time.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## ☁️ Deployment (Cloud)
+
+This project is pre-configured for **Render.com** or **Fly.io** using Docker.
+
+1. Connect your GitHub repository to Render.
+2. Create a new **Web Service**.
+3. Render will automatically detect the `Dockerfile`.
+4. The system will build and deploy your HTTPS-secured link instantly.
+
+---
+
+## 📡 API Endpoints (Documentation)
+
+| Method | Endpoint | Description | Auth Required |
+| :--- | :--- | :--- | :--- |
+| POST | `/api/register` | Create a new Admin | No |
+| POST | `/api/login` | Obtain Bearer Token | No |
+| GET | `/api/patients` | Fetch all patient records | Yes |
+| POST | `/api/patients` | Register new patient | Yes |
+| GET | `/api/doctors` | Fetch medical staff | Yes |
+| GET | `/api/appointments` | Fetch all appointments | Yes |
+| POST | `/api/appointments`| Schedule appointment | Yes |
+
+---
+*Developed by [Japesh](https://github.com/japesh5579)*
