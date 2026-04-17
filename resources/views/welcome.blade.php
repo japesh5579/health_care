@@ -419,8 +419,8 @@
     </main>
 
     <script>
-        // API Base configuration
-        const API = 'http://127.0.0.1:8000/api';
+        // API Base configuration - Using relative path to support production domains dynamically
+        const API = '/api';
 
         // Custom Cache
         let globalData = { doctors: [], patients: [], appointments: [] };
