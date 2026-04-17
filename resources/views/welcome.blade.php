@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Health Pro | API Engine</title>
+    <title>Nexus Health Pro | Clinical Engine</title>
     <!-- Premium Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
@@ -39,7 +39,7 @@
             font-family: var(--jakarta);
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            /* REMOVED overflow: hidden to allow scrolling */
         }
 
         /* --- BACKGROUND EFFECTS --- */
@@ -60,6 +60,9 @@
             display: flex;
             flex-direction: column;
             padding: 32px 0;
+            height: 100vh;
+            position: sticky;
+            top: 0;
             z-index: 100;
         }
 
@@ -97,11 +100,11 @@
             margin-bottom: 4px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative;
         }
         .nav-item:hover {
             background-color: rgba(255, 255, 255, 0.03);
             color: #fff;
-            transform: translateX(4px);
         }
         .nav-item.active {
             background-color: var(--primary-soft);
@@ -109,25 +112,12 @@
         }
         .nav-item i { width: 20px; height: 20px; }
 
-        .sidebar-footer {
-            padding: 0 24px;
-        }
-        .pro-card {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-        }
-        .pro-card p { font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
-
         /* --- MAIN CONTENT --- */
         .main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            position: relative;
+            /* REMOVED max-height: 100vh to allow body scrolling */
         }
 
         .top-bar {
@@ -143,7 +133,6 @@
             border-bottom: 1px solid var(--border);
         }
         .page-title h1 { font-family: var(--outfit); font-size: 24px; font-weight: 700; color: #fff; }
-        .page-title p { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
 
         .content-body {
             padding: 40px;
@@ -152,7 +141,31 @@
             margin: 0 auto;
         }
 
-        /* --- CARDS & GRIDS --- */
+        /* --- AUTH OVERLAY --- */
+        #auth-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease;
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 440px;
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+        }
+        .auth-tabs { display: flex; gap: 24px; margin-bottom: 32px; }
+        .auth-tab { font-size: 18px; font-weight: 700; color: var(--text-dim); cursor: pointer; transition: color 0.2s; }
+        .auth-tab.active { color: #fff; text-decoration: underline; text-underline-offset: 8px; }
+
+        /* --- CARDS --- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -164,18 +177,7 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: all 0.3s ease;
         }
-        .stat-card:hover { border-color: rgba(59, 130, 246, 0.3); transform: translateY(-4px); }
-        .stat-header { display: flex; align-items: center; justify-content: space-between; }
-        .stat-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
-        .stat-icon.green { background: rgba(16, 185, 129, 0.1); color: #34d399; }
-        .stat-icon.purple { background: rgba(139, 92, 246, 0.1); color: #a78bfa; }
-        .stat-label { font-size: 15px; font-weight: 500; color: var(--text-dim); }
         .stat-value { font-size: 32px; font-weight: 800; font-family: var(--outfit); color: #fff; }
 
         .card-container {
@@ -185,13 +187,7 @@
             padding: 32px;
             margin-bottom: 24px;
         }
-        .card-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .card-title h3 { font-size: 18px; font-weight: 700; color: #fff; }
+        .card-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
 
         /* --- LISTS --- */
         .data-list { display: flex; flex-direction: column; gap: 8px; }
@@ -205,424 +201,254 @@
             transition: background 0.2s;
         }
         .list-row:hover { background: rgba(255, 255, 255, 0.02); }
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #1e293b, #334155);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--text-dim);
-            font-size: 14px;
-        }
-        .info h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 2px; }
-        .info p { font-size: 13px; color: var(--text-dim); }
-        
-        .status-pill {
-            padding: 6px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .avatar { width: 48px; height: 48px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
         .status-pill.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
         .status-pill.completed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
         .status-pill.cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-        /* --- FORM --- */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .field { display: flex; flex-direction: column; gap: 8px; }
-        .field label { font-size: 14px; font-weight: 600; color: var(--text-dim); margin-left: 4px; }
-        .input-box {
-            background: #06080f;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 18px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 15px;
-            transition: border-color 0.2s;
-        }
-        .input-box:focus { outline: none; border-color: var(--primary); }
-        .btn-submit {
-            grid-column: span 2;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: #fff;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        /* --- FORMS --- */
+        .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .field label { font-size: 14px; font-weight: 600; color: var(--text-dim); }
+        .input-box { background: #06080f; border: 1px solid var(--border); border-radius: 14px; padding: 14px; color: #fff; font-size: 15px; }
+        .btn-submit { background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4); }
 
-        /* --- COMPONENTS --- */
-        .badge-count {
-            background: var(--primary);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 800;
-        }
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; } }
 
-        /* Views Switching */
-        .view-section { display: none; animation: slideUp 0.4s ease-out; }
-        .view-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* TOAST */
         #toast-container { position: fixed; bottom: 40px; right: 40px; z-index: 9999; }
-        .toast {
-            background: #1e293b;
-            border: 1px solid var(--border);
-            padding: 16px 24px;
-            border-radius: 18px;
-            color: #fff;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* SKELETON LOADER */
-        .skeleton { height: 16px; background: rgba(255,255,255,0.05); border-radius: 4px; position: relative; overflow: hidden; }
-        .skeleton::after {
-            content: "";
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            animation: shimmer 1.5s infinite;
-        }
-        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        @media (max-width: 1100px) { .form-grid { grid-template-columns: 1fr; } .btn-submit { grid-column: span 1; } }
     </style>
 </head>
 <body>
     <div class="mesh-bg"></div>
     <div id="toast-container"></div>
 
-    <aside class="sidebar">
-        <div class="brand">
-            <i data-lucide="activity" style="color: var(--primary)"></i>
-            Nexus<span>Health</span>
-        </div>
-
-        <nav class="nav-menu">
-            <div class="nav-item active" onclick="switchView('dashboard', this)">
-                <i data-lucide="layout-grid"></i> Dashboard
+    <!-- AUTH OVERLAY -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="toggleAuth('login')">Login</div>
+                <div class="auth-tab" id="tab-signup" onclick="toggleAuth('signup')">Sign Up</div>
             </div>
-            <div class="nav-item" onclick="switchView('patients', this)">
-                <i data-lucide="users"></i> Patients
-            </div>
-            <div class="nav-item" onclick="switchView('staff', this)">
-                <i data-lucide="shield-plus"></i> Staff members
-            </div>
-            <div class="nav-item" onclick="switchView('appointments', this)">
-                <i data-lucide="calendar"></i> Appointments
-            </div>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="pro-card">
-                <p>Advanced Production API Engine V1.10</p>
-                <div style="display: flex; justify-content: center; gap: 8px;">
-                    <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--success)"></div>
-                    <span style="font-size: 11px; font-weight: 700; color: var(--success)">LIVE SYSTEM</span>
+            
+            <form id="authForm">
+                <div id="signup-fields" style="display: none;">
+                    <div class="field">
+                        <label>Full Name</label>
+                        <input type="text" id="a-name" class="input-box" placeholder="Your Name">
+                    </div>
                 </div>
-            </div>
+                <div class="field">
+                    <label>Email Address</label>
+                    <input type="email" id="a-email" class="input-box" placeholder="admin@nexus.health" required>
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" id="a-password" class="input-box" placeholder="••••••••" required>
+                </div>
+                <div id="signup-confirm-fields" style="display: none;">
+                    <div class="field">
+                        <label>Confirm Password</label>
+                        <input type="password" id="a-confirm" class="input-box" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit" style="width: 100%; margin-top: 24px;">Authenticating...</button>
+            </form>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="brand"><i data-lucide="activity"></i>Nexus<span>Health</span></div>
+        <nav class="nav-menu">
+            <div class="nav-item active" onclick="switchView('dashboard', this)"><i data-lucide="layout-grid"></i> Dashboard</div>
+            <div class="nav-item" onclick="switchView('patients', this)"><i data-lucide="users"></i> Patients</div>
+            <div class="nav-item" onclick="switchView('appointments', this)"><i data-lucide="calendar"></i> Appointments</div>
+        </nav>
+        <div style="padding: 0 16px; margin-top: auto;">
+             <div class="nav-item" onclick="logout()" style="color: var(--danger)"><i data-lucide="log-out"></i> Logout</div>
         </div>
     </aside>
 
     <main class="main-container">
         <header class="top-bar">
-            <div class="page-title">
-                <h1 id="view-title">Health Overview</h1>
-                <p id="view-subtitle">Monitor and manage medical operations in real-time.</p>
-            </div>
-            <div style="display: flex; gap: 16px;">
-                <div class="nav-item" style="margin: 0; padding: 10px;"><i data-lucide="search"></i></div>
-                <div class="nav-item" style="margin: 0; padding: 10px;"><i data-lucide="bell"></i></div>
-            </div>
+            <div class="page-title"><h1 id="view-title">Health Overview</h1></div>
+            <span id="user-display" style="font-size: 14px; font-weight: 600; color: var(--primary)"></span>
         </header>
 
         <div class="content-body">
-            
-            <!-- STATS ROW -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-label">Total Patients</span>
-                        <div class="stat-icon purple"><i data-lucide="users"></i></div>
-                    </div>
+                    <div style="color: var(--text-dim); font-size: 14px;">Total Patients</div>
                     <div class="stat-value" id="stat-patients">...</div>
-                    <p style="font-size: 12px; color: var(--success)">+12% from last month</p>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-label">Active Doctors</span>
-                        <div class="stat-icon blue"><i data-lucide="user-plus"></i></div>
-                    </div>
-                    <div class="stat-value" id="stat-doctors">...</div>
-                    <p style="font-size: 12px; color: var(--text-dim)">Currently on duty</p>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span class="stat-label">Appointments</span>
-                        <div class="stat-icon green"><i data-lucide="calendar-check"></i></div>
-                    </div>
+                    <div style="color: var(--text-dim); font-size: 14px;">Total Appointments</div>
                     <div class="stat-value" id="stat-appointments">...</div>
-                    <p style="font-size: 12px; color: var(--warning)">8 pending verification</p>
+                </div>
+                <div class="stat-card">
+                    <div style="color: var(--text-dim); font-size: 14px;">Staff Members</div>
+                    <div class="stat-value" id="stat-doctors">...</div>
                 </div>
             </div>
 
-            <!-- DASHBOARD VIEW -->
             <section id="view-dashboard" class="view-section active">
                 <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px;">
                     <div class="card-container">
-                        <div class="card-title">
-                            <h3>Real-time Activity</h3>
-                            <span class="badge-count" id="count-recent">...</span>
-                        </div>
-                        <div id="dashboard-recent-list" class="data-list">
-                            <div class="skeleton" style="margin: 10px 0; height: 60px;"></div>
-                            <div class="skeleton" style="margin: 10px 0; height: 60px;"></div>
-                        </div>
+                        <div class="card-title">Recent Activity</div>
+                        <div id="recent-list" class="data-list"></div>
                     </div>
-
                     <div class="card-container">
-                        <div class="card-title"><h3>Register Patient</h3></div>
-                        <form id="patientForm" class="form-grid">
-                            <div class="field">
-                                <label>Full Name</label>
-                                <input type="text" id="f-name" class="input-box" placeholder="e.g. Liam Johnson" required>
-                            </div>
-                            <div class="field">
-                                <label>Email Address</label>
-                                <input type="email" id="f-email" class="input-box" placeholder="liam@provider.com" required>
-                            </div>
-                            <button type="submit" id="submit-btn" class="btn-submit">Register Record</button>
+                        <div class="card-title">Quick Register</div>
+                        <form id="patientForm">
+                            <div class="field"><label>Patient Name</label><input type="text" id="p-name" class="input-box" required></div>
+                            <div class="field"><label>Email</label><input type="email" id="p-email" class="input-box" required></div>
+                            <button type="submit" class="btn-submit" style="width: 100%">Add Patient</button>
                         </form>
                     </div>
                 </div>
             </section>
 
-            <!-- PATIENTS VIEW -->
             <section id="view-patients" class="view-section">
                 <div class="card-container">
-                    <div class="card-title">
-                        <h3>Patient Master Archive</h3>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="nav-item" style="padding: 8px 16px; font-size: 12px;"><i data-lucide="filter"></i> Filter</button>
-                        </div>
-                    </div>
-                    <div id="patients-full-list" class="data-list"></div>
+                    <div class="card-title">Patient Directory</div>
+                    <div id="patients-list" class="data-list"></div>
                 </div>
             </section>
 
-            <!-- STAFF VIEW -->
-            <section id="view-staff" class="view-section">
-                <div class="card-container">
-                    <div class="card-title"><h3>Qualified Specialists</h3></div>
-                    <div id="staff-full-list" class="data-list"></div>
-                </div>
-            </section>
-
-            <!-- APPOINTMENTS VIEW -->
             <section id="view-appointments" class="view-section">
-                <div class="card-container">
-                    <div class="card-title"><h3>Comprehensive Appointment Logs</h3></div>
-                    <div id="appointments-full-list" class="data-list"></div>
+                <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px;">
+                    <div class="card-container">
+                        <div class="card-title">Appointment Logs</div>
+                        <div id="appointments-list" class="data-list"></div>
+                    </div>
+                    <div class="card-container">
+                        <div class="card-title">Schedule New</div>
+                        <form id="aptForm">
+                            <div class="field"><label>Patient</label><select id="apt-patient" class="input-box" required></select></div>
+                            <div class="field"><label>Doctor</label><select id="apt-doctor" class="input-box" required></select></div>
+                            <div class="field"><label>Date & Time</label><input type="datetime-local" id="apt-date" class="input-box" required></div>
+                            <button type="submit" class="btn-submit" style="width: 100%">Confirm Schedule</button>
+                        </form>
+                    </div>
                 </div>
             </section>
-
         </div>
     </main>
 
     <script>
-        // API Base configuration
         const API = '/api';
+        let state = { token: localStorage.getItem('token'), user: null, view: 'login' };
 
-        // --- View Switching ---
+        async function api(path, method = 'GET', body = null) {
+            const headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' };
+            if (state.token) headers['Authorization'] = `Bearer ${state.token}`;
+            const res = await fetch(`${API}${path}`, { method, headers, body: body ? JSON.stringify(body) : null });
+            if (res.status === 401) { logout(); throw new Error('Unauthorized'); }
+            return res.json();
+        }
+
+        function toggleAuth(view) {
+            state.view = view;
+            document.getElementById('tab-login').classList.toggle('active', view === 'login');
+            document.getElementById('tab-signup').classList.toggle('active', view === 'signup');
+            document.getElementById('signup-fields').style.display = view === 'signup' ? 'block' : 'none';
+            document.getElementById('signup-confirm-fields').style.display = view === 'signup' ? 'block' : 'none';
+            document.querySelector('#authForm button').innerText = view === 'login' ? 'Login to Nexus' : 'Create Admin Account';
+        }
+
+        async function init() {
+            if (!state.token) {
+                document.getElementById('auth-overlay').style.display = 'flex';
+                toggleAuth('login');
+            } else {
+                document.getElementById('auth-overlay').style.display = 'none';
+                await loadData();
+            }
+            lucide.createIcons();
+        }
+
+        async function loadData() {
+            try {
+                const [pts, docs, apts, me] = await Promise.all([api('/patients'), api('/doctors'), api('/appointments'), api('/me')]);
+                state.user = me;
+                document.getElementById('user-display').innerText = `Admin: ${me.name}`;
+                document.getElementById('stat-patients').innerText = pts.data.length;
+                document.getElementById('stat-doctors').innerText = docs.data.length;
+                document.getElementById('stat-appointments').innerText = apts.data.length;
+
+                renderList('recent-list', apts.data.slice(0, 5), 'apt');
+                renderList('patients-list', pts.data, 'pat');
+                renderList('appointments-list', apts.data, 'apt');
+
+                // Populate selects
+                const pSel = document.getElementById('apt-patient'); pSel.innerHTML = pts.data.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+                const dSel = document.getElementById('apt-doctor'); dSel.innerHTML = docs.data.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+            } catch(e) {}
+        }
+
+        function renderList(id, data, type) {
+            const el = document.getElementById(id); el.innerHTML = '';
+            data.forEach(item => {
+                const row = document.createElement('div'); row.className = 'list-row';
+                if (type === 'apt') {
+                    row.innerHTML = `<div class="avatar">${item.patient ? item.patient.name[0] : '?'}</div><div style="flex:1"><h4>Patient: ${item.patient ? item.patient.name : 'N/A'}</h4><p>Dr. ${item.doctor ? item.doctor.name : 'N/A'} • ${new Date(item.appointment_date).toLocaleDateString()}</p></div><div class="status-pill ${item.status}">${item.status}</div>`;
+                } else {
+                    row.innerHTML = `<div class="avatar" style="background:var(--primary-soft)">${item.name[0]}</div><div style="flex:1"><h4>${item.name}</h4><p>${item.email}</p></div><div style="font-size:12px; font-weight:700">PAT-${item.id}</div>`;
+                }
+                el.appendChild(row);
+            });
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button'); btn.disabled = true;
+            const path = state.view === 'login' ? '/login' : '/register';
+            const body = { email: document.getElementById('a-email').value, password: document.getElementById('a-password').value };
+            if (state.view === 'signup') { body.name = document.getElementById('a-name').value; body.password_confirmation = document.getElementById('a-confirm').value; }
+            
+            try {
+                const res = await api(path, 'POST', body);
+                if (res.access_token) {
+                    localStorage.setItem('token', res.access_token);
+                    state.token = res.access_token;
+                    showToast('Welcome back, Admin.');
+                    init();
+                } else { alert(res.message || 'Error occurred'); }
+            } catch(e) { alert('Authentication Failed'); }
+            btn.disabled = false;
+        });
+
+        document.getElementById('aptForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = { patient_id: document.getElementById('apt-patient').value, doctor_id: document.getElementById('apt-doctor').value, appointment_date: document.getElementById('apt-date').value };
+            await api('/appointments', 'POST', body);
+            showToast('New appointment confirmed.');
+            loadData();
+        });
+
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = { name: document.getElementById('p-name').value, email: document.getElementById('p-email').value };
+            await api('/patients', 'POST', body);
+            showToast('Patient record added.');
+            e.target.reset();
+            loadData();
+        });
+
         function switchView(id, el) {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             el.classList.add('active');
-            
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById(`view-${id}`).classList.add('active');
-
-            const titles = {
-                dashboard: { h: 'Health Overview', p: 'Monitor real-time system metrics.' },
-                patients: { h: 'Patient Directory', p: 'Manage and search patient records.' },
-                staff: { h: 'Staff Register', p: 'View duty medical professionals.' },
-                appointments: { h: 'Appointment Calendar', p: 'Complete history of scheduled clinic time.' }
-            };
-            document.getElementById('view-title').innerText = titles[id].h;
-            document.getElementById('view-subtitle').innerText = titles[id].p;
+            document.getElementById('view-title').innerText = id.charAt(0).toUpperCase() + id.slice(1);
         }
 
-        // --- Data Handling ---
-        async function loadAllData() {
-            try {
-                const [pRes, dRes, aRes] = await Promise.all([
-                    fetch(`${API}/patients`),
-                    fetch(`${API}/doctors`),
-                    fetch(`${API}/appointments`)
-                ]);
+        function logout() { localStorage.removeItem('token'); state.token = null; init(); }
+        function showToast(m) { const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i data-lucide="check"></i> ${m}`; document.getElementById('toast-container').appendChild(t); lucide.createIcons(); setTimeout(() => t.remove(), 3000); }
 
-                const patients = (await pRes.json()).data || [];
-                const doctors = (await dRes.json()).data || [];
-                const appointments = (await aRes.json()).data || [];
-
-                // Stats
-                document.getElementById('stat-patients').innerText = patients.length;
-                document.getElementById('stat-doctors').innerText = doctors.length;
-                document.getElementById('stat-appointments').innerText = appointments.length;
-                document.getElementById('count-recent').innerText = Math.min(appointments.length, 5);
-
-                renderDashboard(appointments, doctors);
-                renderPatients(patients);
-                renderStaff(doctors);
-                renderAppointments(appointments);
-
-                lucide.createIcons();
-            } catch (err) {
-                console.error("API Failure", err);
-            }
-        }
-
-        function renderDashboard(appointments, doctors) {
-            const list = document.getElementById('dashboard-recent-list');
-            list.innerHTML = '';
-            
-            appointments.slice(0, 5).forEach(app => {
-                const date = new Date(app.appointment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                list.innerHTML += `
-                    <div class="list-row">
-                        <div class="avatar">${app.patient ? app.patient.name.charAt(0) : '?'}</div>
-                        <div class="info">
-                            <h4>${app.patient ? app.patient.name : 'Unknown Patient'}</h4>
-                            <p>Assigned to ${app.doctor ? app.doctor.name : 'Unassigned'} • ${date}</p>
-                        </div>
-                        <div class="status-pill ${app.status}">${app.status}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderPatients(data) {
-            const list = document.getElementById('patients-full-list');
-            list.innerHTML = '';
-            data.forEach(p => {
-                list.innerHTML += `
-                    <div class="list-row" style="grid-template-columns: 48px 1fr auto">
-                        <div class="avatar" style="background: var(--primary-soft); color: var(--primary)">${p.name.charAt(0)}</div>
-                        <div class="info">
-                            <h4>${p.name}</h4>
-                            <p>${p.email}</p>
-                        </div>
-                        <div class="status-pill" style="background: rgba(255,255,255,0.05); color: #fff">PAT-${p.id}</div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderStaff(data) {
-            const list = document.getElementById('staff-full-list');
-            list.innerHTML = '';
-            data.forEach(d => {
-                list.innerHTML += `
-                    <div class="list-row" style="grid-template-columns: 48px 1fr auto">
-                        <div class="avatar" style="background: rgba(16, 185, 129, 0.1); color: var(--success)">MD</div>
-                        <div class="info">
-                            <h4>${d.name}</h4>
-                            <p>${d.specialization}</p>
-                        </div>
-                        <div style="color: var(--text-dim); font-size: 13px; font-weight: 700">ONLINE</div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAppointments(data) {
-            const list = document.getElementById('appointments-full-list');
-            list.innerHTML = '';
-            data.forEach(app => {
-                const date = new Date(app.appointment_date).toLocaleDateString();
-                list.innerHTML += `
-                    <div class="list-row">
-                        <div class="avatar" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa">CAL</div>
-                        <div class="info">
-                            <h4>Appt #${app.id}</h4>
-                            <p>${app.patient ? app.patient.name : 'N/A'} with ${app.doctor ? app.doctor.name : 'N/A'} • Scheduled for ${date}</p>
-                        </div>
-                        <div class="status-pill ${app.status}">${app.status}</div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- Notification ---
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<i data-lucide="check-circle" style="color: var(--success)"></i> ${msg}`;
-            container.appendChild(toast);
-            lucide.createIcons();
-            setTimeout(() => toast.remove(), 4000);
-        }
-
-        // --- Form Submission ---
-        document.getElementById('patientForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const data = {
-                name: document.getElementById('f-name').value,
-                email: document.getElementById('f-email').value
-            };
-
-            btn.disabled = true;
-            btn.innerText = 'Communicating with API...';
-
-            try {
-                const res = await fetch(`${API}/patients`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (res.ok) {
-                    showToast('Patient records updated successfully.');
-                    document.getElementById('patientForm').reset();
-                    loadAllData();
-                } else {
-                    const error = await res.json();
-                    alert(error.message || "Email must be unique.");
-                }
-            } catch (err) {
-                alert("API connection failed.");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Register Record';
-            }
-        });
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadAllData();
-            // Refresh icons one last time
-            setTimeout(() => lucide.createIcons(), 1000);
-        });
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
