@@ -109,3 +109,7 @@ This project is pre-configured for **Render.com** or **Fly.io** using Docker.
 
 ---
 *Developed by [Japesh](https://github.com/japesh5579)*
+
+**Demo Login Credentials:**
+- **Email:** `jhatta@gmail.com`
+- **Password:** `jhatta12345`
